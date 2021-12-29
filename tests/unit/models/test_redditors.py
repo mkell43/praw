@@ -34,4 +34,4 @@ class TestRedditors(UnitTest):
         with mock.patch.object(self.reddit, "request"):
             func(list("abc"))
             func(tuple("abc"))
-            func(c for c in "abc")
+            func(iter("abc"))

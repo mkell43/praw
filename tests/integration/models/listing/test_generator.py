@@ -20,4 +20,4 @@ class TestListingGenerator(IntegrationTest):
     def test_no_items(self):
         with self.use_cassette():
             submissions = list(self.reddit.redditor("spez").top("hour"))
-        assert len(submissions) == 0
+        assert not submissions

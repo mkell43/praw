@@ -332,8 +332,7 @@ class Collection(RedditBase):
                 print(submission.title, submission.permalink)
 
         """
-        for item in self.sorted_links:
-            yield item
+        yield from self.sorted_links
 
     def __len__(self) -> int:
         """Get the number of posts in this :class:`.Collection`.
@@ -564,8 +563,7 @@ class SubredditCollections(PRAWBase):
             API_PATH["collection_subreddit"],
             params={"sr_fullname": self.subreddit.fullname},
         )
-        for collection in request:
-            yield collection
+        yield from request
 
 
 Subreddit._subreddit_collections_class = SubredditCollections

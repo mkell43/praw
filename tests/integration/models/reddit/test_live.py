@@ -82,7 +82,7 @@ class TestLiveThreadStream(IntegrationTest):
     def test_updates(self, _):
         with self.use_cassette():
             generator = self.live_thread.stream.updates()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), LiveUpdate)
 
 

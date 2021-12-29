@@ -145,7 +145,7 @@ class TestMultiredditStreams(IntegrationTest):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
         with self.use_cassette():
             generator = multi.stream.comments()
-            for i in range(110):
+            for _ in range(110):
                 assert isinstance(next(generator), Comment)
 
     @mock.patch("time.sleep", return_value=None)
@@ -170,7 +170,7 @@ class TestMultiredditStreams(IntegrationTest):
         multi = self.reddit.multireddit("kjoneslol", "sfwpornnetwork")
         with self.use_cassette():
             generator = multi.stream.submissions()
-            for i in range(102):
+            for _ in range(102):
                 assert isinstance(next(generator), Submission)
 
     @mock.patch("time.sleep", return_value=None)

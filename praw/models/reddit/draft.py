@@ -96,25 +96,23 @@ class Draft(RedditBase):
         fetched = False
         if id:
             self.id = id
-        else:
-            if len(_data) > 1:
-                if _data["kind"] == "markdown":
-                    _data["selftext"] = _data.pop("body")
-                elif _data["kind"] == "link":
-                    _data["url"] = _data.pop("body")
-                fetched = True
+        elif len(_data) > 1:
+            if _data["kind"] == "markdown":
+                _data["selftext"] = _data.pop("body")
+            elif _data["kind"] == "link":
+                _data["url"] = _data.pop("body")
+            fetched = True
         super().__init__(reddit, _data=_data, _fetched=fetched)
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
-        if self._fetched:
-            subreddit = (
-                f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
-            )
-            title = f" title={self.title!r}" if self.title else ""
-            return f"{self.__class__.__name__}(id={self.id!r}{subreddit}{title})"
-        else:
+        if not self._fetched:
             return f"{self.__class__.__name__}(id={self.id!r})"
+        subreddit = (
+            f" subreddit={self.subreddit.display_name!r}" if self.subreddit else ""
+        )
+        title = f" title={self.title!r}" if self.title else ""
+        return f"{self.__class__.__name__}(id={self.id!r}{subreddit}{title})"
 
     def _fetch(self):
         for draft in self._reddit.drafts():

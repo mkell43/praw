@@ -20,10 +20,8 @@ class InlineMedia:
     def __eq__(self, other: "InlineMedia"):
         """Return whether the other instance equals the current."""
         return all(
-            [
-                getattr(self, attr) == getattr(other, attr)
-                for attr in ["TYPE", "path", "caption", "media_id"]
-            ]
+            getattr(self, attr) == getattr(other, attr)
+            for attr in ["TYPE", "path", "caption", "media_id"]
         )
 
     def __repr__(self) -> str:
@@ -32,7 +30,7 @@ class InlineMedia:
 
     def __str__(self):
         """Return a string representation of the media in Markdown format."""
-        return f'\n\n![{self.TYPE}]({self.media_id} "{self.caption if self.caption else ""}")\n\n'
+        return f'\n\n![{self.TYPE}]({self.media_id} "{self.caption or ""}")\n\n'
 
 
 class InlineGif(InlineMedia):

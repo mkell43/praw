@@ -33,7 +33,7 @@ class TestRedditors(IntegrationTest):
     def test_stream(self, _):
         with self.use_cassette():
             generator = self.reddit.redditors.stream()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), Subreddit)
 
     def test_partial_redditors(self):

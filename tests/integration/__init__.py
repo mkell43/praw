@@ -49,15 +49,17 @@ class IntegrationTest:
         )
 
     def set_up_record(self):
-        if not self._overrode_reddit_setup:
-            if pytest.placeholders.refresh_token != "placeholder_refresh_token":
-                self.reddit = Reddit(
-                    requestor_kwargs={"session": self._session},
-                    client_id=pytest.placeholders.client_id,
-                    client_secret=pytest.placeholders.client_secret,
-                    user_agent=pytest.placeholders.user_agent,
-                    refresh_token=pytest.placeholders.refresh_token,
-                )
+        if (
+            not self._overrode_reddit_setup
+            and pytest.placeholders.refresh_token != "placeholder_refresh_token"
+        ):
+            self.reddit = Reddit(
+                requestor_kwargs={"session": self._session},
+                client_id=pytest.placeholders.client_id,
+                client_secret=pytest.placeholders.client_secret,
+                user_agent=pytest.placeholders.user_agent,
+                refresh_token=pytest.placeholders.refresh_token,
+            )
 
     def use_cassette(self, cassette_name=None, **kwargs):
         """Use a cassette. The cassette name is dynamically generated.

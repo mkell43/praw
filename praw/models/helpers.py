@@ -182,8 +182,7 @@ class LiveHelper(PRAWBase):
                 ids_chunk = ids[position : position + 100]
                 url = API_PATH["live_info"].format(ids=",".join(ids_chunk))
                 params = {"limit": 100}  # 25 is used if not specified
-                for result in self._reddit.get(url, params=params):
-                    yield result
+                yield from self._reddit.get(url, params=params)
 
         return generator()
 

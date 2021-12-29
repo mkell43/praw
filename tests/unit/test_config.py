@@ -35,8 +35,8 @@ class TestConfig:
             mock_instance.read.assert_called_with(locations)
         finally:
             Config.CONFIG = None  # Force config file reload
-            for env_name in prev_environment:
-                if prev_environment[env_name] is None:
+            for env_name, value in prev_environment.items():
+                if value is None:
                     del os.environ[env_name]
                 else:
                     os.environ[env_name] = prev_environment[env_name]
