@@ -1,7 +1,7 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 import configparser
-import os
 import importlib
+import os
 from threading import Lock
 from typing import Optional
 
@@ -113,15 +113,9 @@ class Config:
 
     def _initialize_attributes(self):
         self._short_url = self._fetch_default("short_url") or self.CONFIG_NOT_SET
-        self.check_for_async = self._config_boolean(
-            self._fetch_default("check_for_async", True)
-        )
-        self.check_for_updates = self._config_boolean(
-            self._fetch_or_not_set("check_for_updates")
-        )
-        self.warn_comment_sort = self._config_boolean(
-            self._fetch_default("warn_comment_sort", True)
-        )
+        self.check_for_async = self._config_boolean(self._fetch_default("check_for_async", True))
+        self.check_for_updates = self._config_boolean(self._fetch_or_not_set("check_for_updates"))
+        self.warn_comment_sort = self._config_boolean(self._fetch_default("warn_comment_sort", True))
         self.kinds = {
             x: self._fetch(f"{x}_kind")
             for x in [
