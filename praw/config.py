@@ -1,6 +1,7 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 import configparser
-import importlib
+
+# import importlib
 import os
 from threading import Lock
 from typing import Optional
@@ -43,9 +44,8 @@ class Config:
         else:
             interpolator_class = None
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        # TODO: Remove this sketchy logging...
-        print(importlib.util.find_spec(__name__).origin)
-        module_dir = os.path.dirname(importlib.util.find_spec(__name__).origin)
+        module_dir = os.path.dirname(__loader__.get_resource_reader(__name__).path)
+        # module_dir = os.path.dirname(importlib.util.find_spec(__name__).origin)
         # module_dir = os.path.dirname(sys.modules[__name__].__file__)
         if "APPDATA" in os.environ:  # Windows
             os_config_path = os.environ["APPDATA"]
