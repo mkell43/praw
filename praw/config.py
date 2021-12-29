@@ -54,7 +54,7 @@ class Config:
         else:
             os_config_path = None
         locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
-        locations = ["praw.ini"]
+        # locations = ["praw.ini"]
         if os_config_path is not None:
             locations.insert(1, os.path.join(os_config_path, "praw.ini"))
         config.read(locations)
