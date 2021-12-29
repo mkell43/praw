@@ -1,7 +1,7 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 import configparser
 import os
-import sys
+import importlib
 from threading import Lock
 from typing import Optional
 
@@ -43,6 +43,7 @@ class Config:
         else:
             interpolator_class = None
         config = configparser.ConfigParser(interpolation=interpolator_class)
+        module_dir = os.path.dirname(importlib.util.find_spec(__name__).origin)
         # module_dir = os.path.dirname(sys.modules[__name__].__file__)
         if "APPDATA" in os.environ:  # Windows
             os_config_path = os.environ["APPDATA"]
@@ -52,7 +53,7 @@ class Config:
             os_config_path = os.path.join(os.environ["HOME"], ".config")
         else:
             os_config_path = None
-        # locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
+        locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
         locations = ["praw.ini"]
         if os_config_path is not None:
             locations.insert(1, os.path.join(os_config_path, "praw.ini"))
