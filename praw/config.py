@@ -43,7 +43,7 @@ class Config:
         else:
             interpolator_class = None
         config = configparser.ConfigParser(interpolation=interpolator_class)
-        module_dir = os.path.dirname(sys.modules[__name__].__file__)
+        # module_dir = os.path.dirname(sys.modules[__name__].__file__)
         if "APPDATA" in os.environ:  # Windows
             os_config_path = os.environ["APPDATA"]
         elif "XDG_CONFIG_HOME" in os.environ:  # Modern Linux
@@ -52,7 +52,8 @@ class Config:
             os_config_path = os.path.join(os.environ["HOME"], ".config")
         else:
             os_config_path = None
-        locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
+        # locations = [os.path.join(module_dir, "praw.ini"), "praw.ini"]
+        locations = ["praw.ini"]
         if os_config_path is not None:
             locations.insert(1, os.path.join(os_config_path, "praw.ini"))
         config.read(locations)
