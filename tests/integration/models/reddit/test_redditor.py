@@ -89,7 +89,7 @@ class TestRedditor(IntegrationTest):
         redditor = self.reddit.redditor("kjoneslol")
         with self.use_cassette():
             for multireddit in redditor.multireddits():
-                if "sfwpornnetwork" == multireddit.name:
+                if multireddit.name == "sfwpornnetwork":
                     break
             else:
                 assert False, "sfwpornnetwork not found in multireddits"
@@ -98,14 +98,14 @@ class TestRedditor(IntegrationTest):
     def test_stream__comments(self, _):
         generator = self.reddit.redditor("AutoModerator").stream.comments()
         with self.use_cassette():
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), Comment)
 
     @mock.patch("time.sleep", return_value=None)
     def test_stream__submissions(self, _):
         generator = self.reddit.redditor("AutoModerator").stream.submissions()
         with self.use_cassette():
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), Submission)
 
     def test_trophies(self):

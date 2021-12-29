@@ -172,7 +172,7 @@ class TestReddit(IntegrationTest):
     def test_random_subreddit(self):
         names = set()
         with self.use_cassette():
-            for i in range(3):
+            for _ in range(3):
                 names.add(self.reddit.random_subreddit().display_name)
         assert len(names) == 3
 

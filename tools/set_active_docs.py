@@ -22,8 +22,9 @@ def fetch_versions():
         versions = [
             packaging.version.parse(slug["slug"].strip("v"))
             for slug in active_versions["results"]
-            if not slug["hidden"] and not slug["slug"] in ["stable", "latest"]
+            if not slug["hidden"] and slug["slug"] not in ["stable", "latest"]
         ]
+
     if versions is None:
         sys.stderr.write("Failed to get current active versions\n")
     return versions
@@ -49,15 +50,14 @@ def main():
             return 1
         if current_version in versions:
             break
-        else:
-            if retry_count >= max_retry_count:
-                sys.stderr.write(
-                    f"Current version {current_version!s} failed to build\n"
-                )
-                return 1
-            sys.stdout.write("Waiting 30 seconds for build to finish\n")
-            retry_count += 1
-            time.sleep(30)
+        if retry_count >= max_retry_count:
+            sys.stderr.write(
+                f"Current version {current_version!s} failed to build\n"
+            )
+            return 1
+        sys.stdout.write("Waiting 30 seconds for build to finish\n")
+        retry_count += 1
+        time.sleep(30)
     aggregated_versions = {}
     for version in versions:
         aggregated_versions.setdefault(version.major, [])

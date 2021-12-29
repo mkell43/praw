@@ -153,7 +153,7 @@ class Reddit:
         *,
         token_manager: Optional[BaseTokenManager] = None,
         **config_settings: Union[str, bool],
-    ):  # noqa: D207, D301
+    ):    # noqa: D207, D301
         """Initialize a :class:`.Reddit` instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from which to
@@ -227,14 +227,14 @@ class Reddit:
                 config_section, config_interpolation, **config_settings
             )
         except configparser.NoSectionError as exc:
-            help_message = (
-                "You provided the name of a praw.ini configuration which does not"
-                " exist.\n\nFor help with creating a Reddit instance,"
-                " visit\nhttps://praw.readthedocs.io/en/latest/code_overview/reddit_instance.html\n\nFor"
-                " help on configuring PRAW,"
-                " visit\nhttps://praw.readthedocs.io/en/latest/getting_started/configuration.html"
-            )
             if site_name is not None:
+                help_message = (
+                    "You provided the name of a praw.ini configuration which does not"
+                    " exist.\n\nFor help with creating a Reddit instance,"
+                    " visit\nhttps://praw.readthedocs.io/en/latest/code_overview/reddit_instance.html\n\nFor"
+                    " help on configuring PRAW,"
+                    " visit\nhttps://praw.readthedocs.io/en/latest/getting_started/configuration.html"
+                )
                 exc.message += f"\n{help_message}"
             raise
 
@@ -404,27 +404,28 @@ class Reddit:
         """
 
     def _check_for_async(self):
-        if self.config.check_for_async:  # pragma: no cover
-            try:
-                shell = get_ipython().__class__.__name__
-                if shell == "ZMQInteractiveShell":
-                    return
-            except NameError:
-                pass
-            in_async = False
-            try:
-                asyncio.get_running_loop()
-                in_async = True
-            except Exception:  # Quietly fail if any exception occurs during the check
-                pass
-            if in_async:
-                logger.warning(
-                    "It appears that you are using PRAW in an asynchronous"
-                    " environment.\nIt is strongly recommended to use Async PRAW:"
-                    " https://asyncpraw.readthedocs.io.\nSee"
-                    " https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
-                    " for more info.\n",
-                )
+        if not self.config.check_for_async:  # pragma: no cover
+            return
+        try:
+            shell = get_ipython().__class__.__name__
+            if shell == "ZMQInteractiveShell":
+                return
+        except NameError:
+            pass
+        in_async = False
+        try:
+            asyncio.get_running_loop()
+            in_async = True
+        except Exception:  # Quietly fail if any exception occurs during the check
+            pass
+        if in_async:
+            logger.warning(
+                "It appears that you are using PRAW in an asynchronous"
+                " environment.\nIt is strongly recommended to use Async PRAW:"
+                " https://asyncpraw.readthedocs.io.\nSee"
+                " https://praw.readthedocs.io/en/latest/getting_started/multiple_instances.html#discord-bots-and-asynchronous-environments"
+                " for more info.\n",
+            )
 
     def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:
@@ -654,15 +655,13 @@ class Reddit:
                     if not chunk:
                         break
                     params = {api_parameter_name: ",".join(chunk)}
-                    for result in self.get(API_PATH["info"], params=params):
-                        yield result
+                    yield from self.get(API_PATH["info"], params=params)
 
             return generator(ids_or_names)
 
         def generator(url):
             params = {"url": url}
-            for result in self.get(API_PATH["info"], params=params):
-                yield result
+            yield from self.get(API_PATH["info"], params=params)
 
         return generator(url)
 
@@ -714,8 +713,7 @@ class Reddit:
                 elif amount_search.group(2).startswith("millisecond"):
                     seconds = 0
                 if seconds <= int(self.config.ratelimit_seconds):
-                    sleep_seconds = seconds + 1
-                    return sleep_seconds
+                    return seconds + 1
         return None
 
     def delete(

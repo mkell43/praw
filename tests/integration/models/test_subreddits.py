@@ -15,7 +15,7 @@ class TestSubreddits(IntegrationTest):
     def test_premium__without_premium(self):
         with self.use_cassette():
             subreddits = list(self.reddit.subreddits.premium())
-        assert len(subreddits) == 0
+        assert not subreddits
 
     def test_premium__with_premium(self):
         with self.use_cassette():
@@ -25,7 +25,7 @@ class TestSubreddits(IntegrationTest):
     def test_gold__without_gold(self):  # ensure backwards compatibility
         with self.use_cassette("TestSubreddits.test_premium__without_premium"):
             subreddits = list(self.reddit.subreddits.gold())
-        assert len(subreddits) == 0
+        assert not subreddits
 
     def test_gold__with_gold(self):  # ensure backwards compatibility
         with self.recorder.use_cassette("TestSubreddits.test_premium__with_premium"):
@@ -91,5 +91,5 @@ class TestSubreddits(IntegrationTest):
     def test_stream(self, _):
         with self.use_cassette():
             generator = self.reddit.subreddits.stream()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), Subreddit)

@@ -235,7 +235,7 @@ class Objector:
             if "rules" in data["json"]["data"]:
                 return self.objectify(loads(data["json"]["data"]["rules"]))
             if "drafts_count" in data["json"]["data"] and all(
-                [key not in data["json"]["data"] for key in ["name", "url"]]
+                key not in data["json"]["data"] for key in ["name", "url"]
             ):  # Draft
                 data["json"]["data"].pop("drafts_count")
                 return self.parsers["Draft"].parse(data["json"]["data"], self._reddit)

@@ -193,10 +193,7 @@ class ModmailConversation(RedditBase):
             reddit.subreddit("test").modmail("2gmz").mute(7)
 
         """
-        if num_days != 3:  # no need to pass params if it's the default
-            params = {"num_hours": num_days * 24}
-        else:
-            params = {}
+        params = {"num_hours": num_days * 24} if num_days != 3 else {}
         self._reddit.request(
             "POST", API_PATH["modmail_mute"].format(id=self.id), params=params
         )

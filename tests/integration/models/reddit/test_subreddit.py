@@ -1602,9 +1602,7 @@ class TestSubredditModmail(IntegrationTest):
             conversations = subreddit.modmail.conversations(
                 other_subreddits=["LifeProTips"]
             )
-            assert (
-                len(set(list(conversation.owner for conversation in conversations))) > 1
-            )
+            assert len({conversation.owner for conversation in conversations}) > 1
 
     @mock.patch("time.sleep", return_value=None)
     def test_conversations__params(self, _):
@@ -1800,7 +1798,7 @@ class TestSubredditStreams(IntegrationTest):
     def test_comments(self, _):
         with self.use_cassette():
             generator = self.reddit.subreddit("all").stream.comments()
-            for i in range(400):
+            for _ in range(400):
                 assert isinstance(next(generator), Comment)
 
     @mock.patch("time.sleep", return_value=None)
@@ -1827,7 +1825,7 @@ class TestSubredditStreams(IntegrationTest):
             generator = self.reddit.subreddit("all").stream.comments(skip_existing=True)
             count = 0
             try:
-                for comment in generator:
+                for _ in generator:
                     count += 1
             except RequestException:
                 pass
@@ -1838,7 +1836,7 @@ class TestSubredditStreams(IntegrationTest):
     def test_submissions(self):
         with self.use_cassette():
             generator = self.reddit.subreddit("all").stream.submissions()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), Submission)
 
     @mock.patch("time.sleep", return_value=None)
@@ -1878,7 +1876,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.edited()
-            for i in range(10):
+            for _ in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
 
     @mock.patch("time.sleep", return_value=None)
@@ -1886,7 +1884,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.log()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), ModAction)
 
     @mock.patch("time.sleep", return_value=None)
@@ -1894,7 +1892,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.reddit.subreddit("mod").mod.stream.modmail_conversations()
-            for i in range(101):
+            for _ in range(101):
                 assert isinstance(next(generator), ModmailConversation)
 
     @mock.patch("time.sleep", return_value=None)
@@ -1902,7 +1900,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.modqueue()
-            for i in range(10):
+            for _ in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
 
     @mock.patch("time.sleep", return_value=None)
@@ -1910,7 +1908,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.spam()
-            for i in range(10):
+            for _ in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
 
     @mock.patch("time.sleep", return_value=None)
@@ -1918,7 +1916,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.reports()
-            for i in range(10):
+            for _ in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
 
     @mock.patch("time.sleep", return_value=None)
@@ -1926,7 +1924,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.subreddit.mod.stream.unmoderated()
-            for i in range(10):
+            for _ in range(10):
                 assert isinstance(next(generator), (Comment, Submission))
 
     @mock.patch("time.sleep", return_value=None)
@@ -1934,7 +1932,7 @@ class TestSubredditModerationStreams(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             generator = self.reddit.subreddit("mod").mod.stream.unread()
-            for i in range(2):
+            for _ in range(2):
                 assert isinstance(next(generator), SubredditMessage)
 
 

@@ -19,10 +19,7 @@ class LiveContributorRelationship:
 
     @staticmethod
     def _handle_permissions(permissions):
-        if permissions is None:
-            permissions = {"all"}
-        else:
-            permissions = set(permissions)
+        permissions = {"all"} if permissions is None else set(permissions)
         return ",".join(f"+{x}" for x in permissions)
 
     def __call__(self) -> List["praw.models.Redditor"]:
@@ -137,10 +134,7 @@ class LiveContributorRelationship:
             thread.contributor.remove("t2_1w72")  # with fullname
 
         """
-        if isinstance(redditor, Redditor):
-            fullname = redditor.fullname
-        else:
-            fullname = redditor
+        fullname = redditor.fullname if isinstance(redditor, Redditor) else redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
@@ -166,10 +160,7 @@ class LiveContributorRelationship:
             contributor of the live thread.
 
         """
-        if isinstance(redditor, Redditor):
-            fullname = redditor.fullname
-        else:
-            fullname = redditor
+        fullname = redditor.fullname if isinstance(redditor, Redditor) else redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)

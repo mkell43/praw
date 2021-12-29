@@ -92,7 +92,7 @@ class TestRule(IntegrationTest):
         self.reddit.read_only = False
         with self.use_cassette():
             rule_list = list(self.subreddit.rules)
-            reordered = rule_list[2:3] + rule_list[0:2] + rule_list[3:]
+            reordered = rule_list[2:3] + rule_list[:2] + rule_list[3:]
             rule_info = {rule.short_name: rule for rule in rule_list}
             self.subreddit.rules.mod.reorder(reordered)
             new_rules = list(self.subreddit.rules)
@@ -106,7 +106,7 @@ class TestRule(IntegrationTest):
         with self.use_cassette():
             rule_list = list(self.subreddit.rules)
             with pytest.raises(RedditAPIException):
-                self.subreddit.rules.mod.reorder(rule_list + rule_list[0:1])
+                self.subreddit.rules.mod.reorder(rule_list + rule_list[:1])
 
     @mock.patch("time.sleep", return_value=None)
     def test_reorder_rules_empty(self, _):

@@ -208,12 +208,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
     def _validate_gallery(images):
         for image in images:
             image_path = image.get("image_path", "")
-            if image_path:
-                if not isfile(image_path):
-                    raise TypeError(f"{image_path!r} is not a valid image path.")
-            else:
+            if not image_path:
                 raise TypeError("'image_path' is required.")
-            if not len(image.get("caption", "")) <= 180:
+            if not isfile(image_path):
+                raise TypeError(f"{image_path!r} is not a valid image path.")
+            if len(image.get("caption", "")) > 180:
                 raise TypeError("Caption must be 180 characters or less.")
 
     @staticmethod
@@ -1515,8 +1514,7 @@ class SubredditFilters:
         )
         params = {"unique": self.subreddit._reddit._next_unique}
         response_data = self.subreddit._reddit.get(url, params=params)
-        for subreddit in response_data.subreddits:
-            yield subreddit
+        yield from response_data.subreddits
 
     def add(self, subreddit: Union["praw.models.Subreddit", str]):
         """Add ``subreddit`` to the list of filtered subreddits.
@@ -1928,11 +1926,10 @@ class SubredditFlairTemplates:
             ]
             if len(_existing_data) != 1:
                 raise InvalidFlairTemplateID(template_id)
-            else:
-                existing_data = _existing_data[0]
-                for key, value in existing_data.items():
-                    if data.get(key) is None:
-                        data[key] = value
+            existing_data = _existing_data[0]
+            for key, value in existing_data.items():
+                if data.get(key) is None:
+                    data[key] = value
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1954,8 +1951,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """
         url = API_PATH["user_flair"].format(subreddit=self.subreddit)
         params = {"unique": self.subreddit._reddit._next_unique}
-        for template in self.subreddit._reddit.get(url, params=params):
-            yield template
+        yield from self.subreddit._reddit.get(url, params=params)
 
     def add(
         self,
@@ -2035,8 +2031,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
-        for template in self.subreddit._reddit.get(url):
-            yield template
+        yield from self.subreddit._reddit.get(url)
 
     def add(
         self,
@@ -2112,10 +2107,9 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         url = API_PATH["flairselector"].format(subreddit=self.subreddit)
-        for template in self.subreddit._reddit.post(url, data={"is_newlink": True})[
+        yield from self.subreddit._reddit.post(url, data={"is_newlink": True})[
             "choices"
-        ]:
-            yield template
+        ]
 
 
 class SubredditModeration:
@@ -3520,8 +3514,12 @@ class SubredditStylesheet:
             return response
 
     def _upload_style_asset(self, image_path: str, image_type: str) -> str:
-        data = {"imagetype": image_type, "filepath": basename(image_path)}
-        data["mimetype"] = "image/jpeg"
+        data = {
+            'imagetype': image_type,
+            'filepath': basename(image_path),
+            'mimetype': 'image/jpeg',
+        }
+
         if image_path.lower().endswith(".png"):
             data["mimetype"] = "image/png"
         url = API_PATH["style_asset_lease"].format(subreddit=self.subreddit)

@@ -69,7 +69,7 @@ class RedditBase(PRAWBase):
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
-        return f"{self.__class__.__name__}({self.STR_FIELD}={str(self)!r})"
+        return f'{self.__class__.__name__}({self.STR_FIELD}={self!r})'
 
     def __str__(self) -> str:
         """Return a string representation of the instance."""

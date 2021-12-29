@@ -62,9 +62,7 @@ def get_request_params(client_id, redirect_uri, thing):
     client = receive_connection()
     data = client.recv(1024).decode("utf-8")
     param_tokens = data.split(" ", 2)[1].split("?", 1)[1].split("&")
-    params = {
-        key: value for (key, value) in [token.split("=") for token in param_tokens]
-    }
+    params = dict([token.split("=") for token in param_tokens])
 
     if state != params["state"]:
         send_message(
@@ -255,13 +253,12 @@ def main():
         )
     if out_file is None:
         print(final_content)
+    elif isdir(split(out_file)[0]):
+        with open(out_file, "w") as f:
+            f.write(final_content)
+        print(f"Successfully written awards to {out_file!r}")
     else:
-        if isdir(split(out_file)[0]):
-            with open(out_file, "w") as f:
-                f.write(final_content)
-            print(f"Successfully written awards to {out_file!r}")
-        else:
-            print(f"THe directory, {split(out_file)[0]!r}, does not exist.")
+        print(f"THe directory, {split(out_file)[0]!r}, does not exist.")
 
 
 def validate_award_json(award_json, award_type):
